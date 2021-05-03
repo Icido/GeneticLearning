@@ -6,7 +6,7 @@
 #include "GeneticAlgorithmController.generated.h"
 
 // Forward declarations
-class FGenomes;
+class UGenomes;
 
 UCLASS()
 class GENETICALGORITHMMODULE_API UGeneticAlgorithmController : public UActorComponent
@@ -66,12 +66,12 @@ public:
 
 	//TODO: Change TQueue to something readable for use in creating Smart Enemies (possibly, works currently with SEConvert being used in SE)
 	// The queues used to obtain data from the thread 
-	TQueue<TArray<FGenomes*>> ThreadGenomeGenerationQueue;
+	TQueue<TArray<UGenomes*>> ThreadGenomeGenerationQueue;
 	TQueue<TArray<TArray<float>>> ThreadNewEnemyQueue;
 	TQueue<double> ThreadGlobalBestFitnessScoreQueue;
 
 	// Storage for the obtained Genomes
-	TArray<FGenomes*> CurrentGeneration;
+	TArray<UGenomes*> CurrentGeneration;
 
 	// Storage for the obtained converted Genomes
 	TArray<TArray<float>> CurrentUsableEnemies;

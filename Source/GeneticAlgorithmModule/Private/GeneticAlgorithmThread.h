@@ -7,7 +7,7 @@
 class FRunnableThread;
 class UGeneticAlgorithmController;
 class UGeneticAlgorithmFunctionality;
-class FGenomes;
+class UGenomes;
 class UGenomeHelper;
 
 class GENETICALGORITHMMODULE_API FGeneticAlgorithmThread : public FRunnable
@@ -18,7 +18,7 @@ public:
 	FGeneticAlgorithmThread(int32 _Generations, UGeneticAlgorithmController *_UGAController);
 
 	// Additional constructor that takes in any previous information that may have been obtained the last time the thread was stopped, as to not start from scratch
-	FGeneticAlgorithmThread(TArray<FGenomes*> _CurrentGenerationGenomes, double _GlobalBestFitness, int32 _Generations, UGeneticAlgorithmController *_UGAController);
+	FGeneticAlgorithmThread(TArray<UGenomes*> _CurrentGenerationGenomes, double _GlobalBestFitness, int32 _Generations, UGeneticAlgorithmController *_UGAController);
 
 	// Helper function to prevent code duplication across both constructors
 	void NewThread(int32 _Generations, UGeneticAlgorithmController* _UGAController);

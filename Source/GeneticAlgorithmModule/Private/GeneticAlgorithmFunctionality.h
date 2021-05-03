@@ -10,7 +10,7 @@
 
 
 // Forward declarations
-class FGenomes;
+class UGenomes;
 
 /**
  * @brief The functionality behind the Genetic Algorithm - this class utilises the Genetic Algorithm and returns any Genomes fit enough for export
@@ -26,26 +26,35 @@ public:
 	 * @brief Set function that sets the current Generation of Genomes to the Generation that has been given
 	 * @param _LastGenerationGenomes The TArray of Genomes to be used as the current Generation
 	 */
-	void SetCurrentGeneration(TArray<FGenomes*> _LastGenerationGenomes);
+	UFUNCTION()
+	void SetCurrentGeneration(TArray<UGenomes*> _LastGenerationGenomes);
 
 	/**
 	* @returns Latest Generation of Genomes that were created
 	*/
-	TArray<FGenomes*> GetCurrentGeneration() const;
+	UFUNCTION()
+	TArray<UGenomes*> GetCurrentGeneration() const;
 
 	/**
 	* @returns Any Genomes that have been the "fittest" at one point 
 	*/
 	TArray<TArray<float>> GetCurrentBestGenomes() const;
 
+	UFUNCTION()
+	void CopyChildren();
+
+	UFUNCTION()
+	void CheckGeneration();
 	/**
 	* @brief The encompassing function that tests the current generation and creates a new generation if it has not reached perfection
 	*/
+	UFUNCTION()
 	void Epoch();
 	
 	/**
 	* @brief The fitness scores are updated within this function, each Genome is tested and assigned a fitness score between 0 and 1
 	*/
+	UFUNCTION()
 	void UpdateFitnessScores();
 
 	/**
@@ -55,7 +64,8 @@ public:
 	 * @param _Child1 The first Child Genome that receives the Genes
 	 * @param _Child2 The second Child Genome that receives the Genes
 	 */
-	void Crossover(FGenomes* _Mother, FGenomes* _Father, FGenomes* _Child1, FGenomes* _Child2) const;
+	UFUNCTION()
+	void Crossover(UGenomes* _Mother, UGenomes* _Father, UGenomes* _Child1, UGenomes* _Child2) const;
 	
 	// Different helper classes used for gene editing, gene conversion and testing respectively
 	UPROPERTY()
@@ -67,6 +77,7 @@ public:
 
 
 	/** @brief Whether or not the Genetic Algorithm has found a perfect Genome for the test, one that has achieved over 0.95 for long enough or exactly 1 */
+	UPROPERTY()
 	bool bHasFoundPerfection = false;
 	
 
@@ -124,11 +135,25 @@ public:
 	
 
 	/** @brief The fittest Genomes that have been found - if a new Genome is fitter, this is replaced by the fitter Genome */
-	FGenomes* BestGenomes = nullptr;
+	UPROPERTY()
+	UGenomes* BestGenomes = nullptr;
 	
 	/** @brief The current generation of Genomes - these are first tested, then a new generation is created afterwards to replace it */
-	TArray<FGenomes*> CurrentGenerationGenomes;
+	UPROPERTY()
+	TArray<UGenomes*> CurrentGenerationGenomes;
 
 	/** @brief TArray of the best available decoded Genomes, and all that came before it */
 	TArray<TArray<float>> BestAvailableGenomesDecoded;
+
+	UPROPERTY()
+	TArray<UGenomes*> Children;
+
+	UPROPERTY()
+	UGenomes* Mother;
+	UPROPERTY()
+	UGenomes* Father;
+	UPROPERTY()
+	UGenomes* Child1;
+	UPROPERTY()
+	UGenomes* Child2;
 };

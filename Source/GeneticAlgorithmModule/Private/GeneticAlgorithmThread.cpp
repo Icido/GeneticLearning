@@ -1,13 +1,14 @@
 #include "GeneticAlgorithmThread.h"
 #include "GeneticAlgorithmController.h"
 #include "GeneticAlgorithmFunctionality.h"
+#include "GeneticAlgorithmModule.h"
 
 FGeneticAlgorithmThread::FGeneticAlgorithmThread(int32 _Generations, UGeneticAlgorithmController* _UGAController)
 {
 	NewThread(_Generations, _UGAController);
 }
 
-FGeneticAlgorithmThread::FGeneticAlgorithmThread(TArray<FGenomes*> _CurrentGenerationGenomes, double _GlobalBestFitness, int32 _Generations,
+FGeneticAlgorithmThread::FGeneticAlgorithmThread(TArray<UGenomes*> _CurrentGenerationGenomes, double _GlobalBestFitness, int32 _Generations,
                                                  UGeneticAlgorithmController* _UGAController)
 {
 	NewThread(_Generations, _UGAController);
@@ -47,6 +48,7 @@ uint32 FGeneticAlgorithmThread::Run()
 			// Enqueues the fittest Genomes that have been tested. Only those that have beaten the previous highest fitness score are allowed to join.
 			CurrentGAController->ThreadNewEnemyQueue.Enqueue(GAFunctions->GetCurrentBestGenomes());
 			GenerationCount++;
+			UE_LOG(GeneticAlgorithmModule, Display, TEXT("Generation Number: %d"), GenerationCount);
 		}
 		else
 		{

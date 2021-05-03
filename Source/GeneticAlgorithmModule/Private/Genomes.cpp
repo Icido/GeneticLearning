@@ -1,7 +1,8 @@
 ﻿#include "Genomes.h"
 
+#include "GeneticAlgorithmModule.h"
 
-FGenomes::FGenomes(int32 _NumBits)
+void UGenomes::InitGenome(int32 _NumBits)
 {
 	Fitness = 0;
 	Bits.Empty();
@@ -41,7 +42,13 @@ FGenomes::FGenomes(int32 _NumBits)
 		UE_LOG(LogClass, Fatal, TEXT("Genomes were not initialized properly."));
 }
 
-void FGenomes::Verify()
+void UGenomes::AssignBits(TArray<bool> _NewBits)
+{
+	Bits.Empty();
+	Bits.Append(_NewBits);
+}
+
+void UGenomes::Verify()
 {
 	if(Bits.Num() > 56)
 		UE_LOG(LogClass, Fatal, TEXT("Number of bits exceeds limit."));
@@ -56,4 +63,15 @@ void FGenomes::Verify()
 
 		UE_LOG(LogClass, Fatal, TEXT("Bit is not a boolean value."));
 	}
+}
+
+bool UGenomes::ClearGenome()
+{
+	Bits.Empty();
+	Fitness = 0;
+
+	if(Bits.Num() > 0 || Fitness != 0)
+		return false;
+
+	return true;
 }

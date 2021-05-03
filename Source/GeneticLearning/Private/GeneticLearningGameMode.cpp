@@ -31,7 +31,7 @@ void AGeneticLearningGameMode::BeginPlay()
 	//To gather all Spawn Points for reference
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASmartEnemySpawnPoint::StaticClass(), SpawnPoints);
 
-	GAController->InitGenerations(1000);
+	//GAController->InitGenerations(20000);
 	
 	// Assert to ensure there's no leftover SmartEnemies that may disrupt initialization
 	check(AllSmartEnemiesDead());
@@ -71,7 +71,7 @@ void AGeneticLearningGameMode::Tick(float DeltaSeconds)
 
 void AGeneticLearningGameMode::WaveCheck(ASmartEnemy* LastSmartEnemyKilled)
 {
-	GAController->InitGenerations(100);
+	//GAController->InitGenerations(1000);
 
 	if(LastSmartEnemyKilled != nullptr)
 	{

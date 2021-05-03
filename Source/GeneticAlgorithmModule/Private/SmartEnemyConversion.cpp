@@ -1,7 +1,7 @@
 #include "SmartEnemyConversion.h"
 #include "Genomes.h"
 
-TArray<int32> USmartEnemyConversion::DecodeGenome(FGenomes* _Genomes, int32 _GeneLength)
+TArray<int32> USmartEnemyConversion::DecodeGenome(UGenomes* _Genomes, int32 _GeneLength)
 {
 	TArray<int32> MutationValues;
 
@@ -99,7 +99,7 @@ TArray<float> USmartEnemyConversion::DecodedMutations(TArray<int32> _Mutations, 
 }
 
 
-TArray<float> USmartEnemyConversion::GenomeToEnemy(FGenomes* _Genomes, int32 _GeneLength)
+TArray<float> USmartEnemyConversion::GenomeToEnemy(UGenomes* _Genomes, int32 _GeneLength)
 {
 	if(!_Genomes)
 		UE_LOG(LogClass, Fatal, TEXT("Genomes could not be read in Conversion."));

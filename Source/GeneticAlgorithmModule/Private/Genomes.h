@@ -1,17 +1,29 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "Genomes.generated.h"
 
-class GENETICALGORITHMMODULE_API FGenomes
+UCLASS()
+class GENETICALGORITHMMODULE_API UGenomes : public UObject
 {
 	public:
-
-	FGenomes() {}
-	FGenomes(int32 _NumBits);
+	GENERATED_BODY()
 	
+	UFUNCTION()
+	void InitGenome(int32 _NumBits);
+
+	UFUNCTION()
+	void AssignBits(TArray<bool> _NewBits);
+
+	UFUNCTION()
 	void Verify();
 
+	UFUNCTION()
+	bool ClearGenome();
+
+	UPROPERTY()
 	TArray<bool> Bits;
-	
+
+	UPROPERTY()
 	double Fitness = 0;
 };

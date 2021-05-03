@@ -9,28 +9,40 @@
 UGeneticAlgorithmFunctionality::UGeneticAlgorithmFunctionality(): Super()
 {
 	CurrentGenerationGenomes.Empty();
-
+	Children.Empty();
+	
 	for (int32 i = 0; i < PopulationSize; i++)
 	{
-		FGenomes* Child = new FGenomes(ChromosomeLength);
+		//FGenomes* Child = new FGenomes(ChromosomeLength);
+		UGenomes* Child = NewObject<UGenomes>();
+		Child->InitGenome(ChromosomeLength);
 
 		Child->Verify();
 
 		CurrentGenerationGenomes.Push(Child);
+
+		UGenomes* SecondChild = NewObject<UGenomes>();
+		Children.Push(SecondChild);
 	}
 
 	GHelper = NewObject<UGenomeHelper>();
 	SEConvert = NewObject<USmartEnemyConversion>();
 	SETest = NewObject<USmartEnemyTest>();
+	Mother = NewObject<UGenomes>();
+   	Father = NewObject<UGenomes>();
+   	Child1 = NewObject<UGenomes>();
+   	Child2 = NewObject<UGenomes>();
 }
 
-void UGeneticAlgorithmFunctionality::SetCurrentGeneration(TArray<FGenomes*> _LastGenerationGenomes)
+void UGeneticAlgorithmFunctionality::SetCurrentGeneration(TArray<UGenomes*> _LastGenerationGenomes)
 {
 	CurrentGenerationGenomes.Empty();
 	CurrentGenerationGenomes.Append(_LastGenerationGenomes);
+	Children.Empty();
+	Children.Append(_LastGenerationGenomes);
 }
 
-TArray<FGenomes*> UGeneticAlgorithmFunctionality::GetCurrentGeneration() const
+TArray<UGenomes*> UGeneticAlgorithmFunctionality::GetCurrentGeneration() const
 {
 	return CurrentGenerationGenomes;
 }
@@ -40,46 +52,98 @@ TArray<TArray<float>> UGeneticAlgorithmFunctionality::GetCurrentBestGenomes() co
 	return BestAvailableGenomesDecoded;
 }
 
+void UGeneticAlgorithmFunctionality::CopyChildren()
+{
+	for(int32 i = 0; i < PopulationSize; i++)
+	{
+		check(CurrentGenerationGenomes[i]->Bits.Num() == ChromosomeLength);
+		check(Children[i]->Bits.Num() == ChromosomeLength);
+		
+		CurrentGenerationGenomes[i]->AssignBits(Children[i]->Bits);
+	}
+}
+
+void UGeneticAlgorithmFunctionality::CheckGeneration()
+{
+	check(CurrentGenerationGenomes.Num() == PopulationSize);
+	
+	for(int32 i = 0; i < PopulationSize; i++)
+	{
+		check(CurrentGenerationGenomes.IsValidIndex(i));
+		check(CurrentGenerationGenomes[i] != NULL);
+		check(CurrentGenerationGenomes[i] != nullptr);
+		//check(CurrentGenerationGenomes[i]->Fitness != NAN);
+		//check(CurrentGenerationGenomes[i]->Fitness != NULL);
+		check(CurrentGenerationGenomes[i]->Fitness >= 0);
+		check(CurrentGenerationGenomes[i]->Fitness <= 1);
+		check(CurrentGenerationGenomes[i]->Bits.Num() == ChromosomeLength);
+	}
+}
+
 
 void UGeneticAlgorithmFunctionality::Epoch()
 {
+	CheckGeneration();
+	
 	// Updates the Fitness Scores of the Current Generation
 	UpdateFitnessScores();
 
+	CheckGeneration();
 	// If there's been no perfection yet (according to the UpdateFitnessScores() - Create a new generation
 	if(!bHasFoundPerfection)
 	{
 		int32 NumberOfNewChildren = 0;
 
-		TArray<FGenomes*> Children;
-
+		CheckGeneration();
+		
 		while(NumberOfNewChildren < PopulationSize)
-		{	
-			FGenomes* Mother = GHelper->RouletteWheelSelection(CurrentGenerationGenomes, TotalFitnessScore, PopulationSize);
-			FGenomes* Father = GHelper->RouletteWheelSelection(CurrentGenerationGenomes, TotalFitnessScore, PopulationSize);
+		{
+			CheckGeneration();
 			
-			FGenomes* Child1 = new FGenomes;
-			FGenomes* Child2 = new FGenomes;
+			//FGenomes* Mother = GHelper->RouletteWheelSelection(CurrentGenerationGenomes, TotalFitnessScore, PopulationSize);
+			//FGenomes* Father = GHelper->RouletteWheelSelection(CurrentGenerationGenomes, TotalFitnessScore, PopulationSize);
+			Mother->AssignBits(GHelper->RouletteWheelSelection(CurrentGenerationGenomes, TotalFitnessScore, PopulationSize));
+			Father->AssignBits(GHelper->RouletteWheelSelection(CurrentGenerationGenomes, TotalFitnessScore, PopulationSize));
+
+			CheckGeneration();
+			
+			check(Mother->Bits.Num() == ChromosomeLength);
+			check(Father->Bits.Num() == ChromosomeLength);
 			
 			Crossover(Mother, Father, Child1, Child2);
 
+			check(Child1->Bits.Num() == ChromosomeLength);
+			check(Child2->Bits.Num() == ChromosomeLength);
+			
+			CheckGeneration();
+			
 			GHelper->Mutate(Child1, MutationRate);
 			GHelper->Mutate(Child2, MutationRate);
 
-			Children.Push(Child1);
-			Children.Push(Child2);
+			check(Child1->Bits.Num() == ChromosomeLength);
+			check(Child2->Bits.Num() == ChromosomeLength);
+
+			CheckGeneration();
+			
+			Children[NumberOfNewChildren]->AssignBits(Child1->Bits);
+			Children[NumberOfNewChildren + 1]->AssignBits(Child2->Bits);
+
+			CheckGeneration();
 			
 			NumberOfNewChildren += 2;
 		}
 
-		CurrentGenerationGenomes.Empty();
-		CurrentGenerationGenomes.Append(Children);
+		CheckGeneration();
+		
+		CopyChildren();
 
+		CheckGeneration();
+		
 		GenerationNumber++;
 	}
 }
 
-void UGeneticAlgorithmFunctionality::Crossover(FGenomes* _Mother, FGenomes* _Father, FGenomes* _Child1, FGenomes* _Child2) const
+void UGeneticAlgorithmFunctionality::Crossover(UGenomes* _Mother, UGenomes* _Father, UGenomes* _Child1, UGenomes* _Child2) const
 {
 	_Child1->Bits.Empty();
 	_Child2->Bits.Empty();
@@ -117,10 +181,12 @@ void UGeneticAlgorithmFunctionality::UpdateFitnessScores()
 	for (int i = 0; i < PopulationSize; i++)
 	{
 		//Converts the genes of this individual into a list of attribute values, used in the fitness test
-		if(CurrentGenerationGenomes[i] == nullptr || !CurrentGenerationGenomes.IsValidIndex(i))
-			UE_LOG(GeneticAlgorithmModule, Fatal, TEXT("Genomes were not initialized properly."));
+		check(CurrentGenerationGenomes[i] != nullptr);
+		check(CurrentGenerationGenomes.IsValidIndex(i));
 		
-		CurrentGenerationGenomes[i]->Verify();
+		//CurrentGenerationGenomes[i]->Verify();
+
+		CurrentGenerationGenomes[i]->Fitness = 0;
 		
 		CurrentGenerationGenomes[i]->Fitness = SETest->FitnessTest(SEConvert->GenomeToEnemy(CurrentGenerationGenomes[i], GeneLength));
 		
