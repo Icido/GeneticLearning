@@ -14,6 +14,7 @@ class GENETICALGORITHMMODULE_API UGenomes : public UObject
 
 	UFUNCTION()
 	void AssignBits(TArray<bool> _NewBits);
+	void AssignSingleBit(int32 _BitIndex, bool _NewBit);
 
 	UFUNCTION()
 	void Verify();

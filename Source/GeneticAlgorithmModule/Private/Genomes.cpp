@@ -44,8 +44,30 @@ void UGenomes::InitGenome(int32 _NumBits)
 
 void UGenomes::AssignBits(TArray<bool> _NewBits)
 {
-	Bits.Empty();
-	Bits.Append(_NewBits);
+	check(_NewBits.Num() > 0);
+	check(_NewBits.Num() == Bits.Num());
+	check(Bits.Num() > 0);
+
+	for(int32 bitNum = 0; bitNum < Bits.Num(); bitNum++)
+	{
+		Bits[bitNum] = _NewBits[bitNum];
+	}
+
+	check(Bits.Num() > 0);
+	check(_NewBits.Num() == Bits.Num());
+
+	//Bits.Empty();
+	//Bits.Append(_NewBits);
+}
+
+void UGenomes::AssignSingleBit(int32 _BitIndex, bool _NewBit)
+{
+	//check(_NewBit == true || _NewBit == false);
+	check(Bits.IsValidIndex(_BitIndex));
+
+	Bits[_BitIndex] = _NewBit;
+
+	check(Bits[_BitIndex] == _NewBit);
 }
 
 void UGenomes::Verify()

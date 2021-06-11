@@ -45,7 +45,9 @@ void ASmartEnemy::OnBulletHit_Implementation(float Damage)
 	Stats->TakeHealthDamage(Damage);
 
 	//GLog->Log(TEXT("Enemy has taken some damage."));
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, FString::Printf(TEXT("Enemy has taken %f damage, %f health remains."), Damage, Stats->Stats.Health));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, FString::Printf(TEXT("Enemy has taken %f damage, %f health remains."), Damage, Stats->Stats.Health));
+	UE_LOG(LogTemp, Display, TEXT("Enemy has taken %f damage, %f health remains."), Damage, Stats->Stats.Health);
+	
 		
 	if(Stats->IsDead())
 	{

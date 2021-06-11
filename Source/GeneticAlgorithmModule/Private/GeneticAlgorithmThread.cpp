@@ -3,27 +3,28 @@
 #include "GeneticAlgorithmFunctionality.h"
 #include "GeneticAlgorithmModule.h"
 
-FGeneticAlgorithmThread::FGeneticAlgorithmThread(int32 _Generations, UGeneticAlgorithmController* _UGAController)
+FGeneticAlgorithmThread::FGeneticAlgorithmThread(UGeneticAlgorithmFunctionality* _GAFunctions, int32 _Generations, AGeneticAlgorithmController* _UGAController)
 {
-	NewThread(_Generations, _UGAController);
+	NewThread(_GAFunctions, _Generations, _UGAController);
 }
 
-FGeneticAlgorithmThread::FGeneticAlgorithmThread(TArray<UGenomes*> _CurrentGenerationGenomes, double _GlobalBestFitness, int32 _Generations,
-                                                 UGeneticAlgorithmController* _UGAController)
+FGeneticAlgorithmThread::FGeneticAlgorithmThread(UGeneticAlgorithmFunctionality* _GAFunctions, TArray<UGenomes*> _CurrentGenerationGenomes, double _GlobalBestFitness, int32 _Generations,
+                                                 AGeneticAlgorithmController* _UGAController)
 {
-	NewThread(_Generations, _UGAController);
+	NewThread(_GAFunctions, _Generations, _UGAController);
 	GAFunctions->SetCurrentGeneration(_CurrentGenerationGenomes);
 	GAFunctions->GlobalBestFitnessScore = _GlobalBestFitness;
 }
 
-void FGeneticAlgorithmThread::NewThread(int32 _Generations, UGeneticAlgorithmController* _UGAController)
+void FGeneticAlgorithmThread::NewThread(UGeneticAlgorithmFunctionality* _GAFunctions, int32 _Generations, AGeneticAlgorithmController* _UGAController)
 {
+	
 	if(_Generations > 0 && _UGAController)
 	{
 		Generations = _Generations;
 		CurrentGAController = _UGAController;
 		bStopThread = false;
-		GAFunctions = NewObject<UGeneticAlgorithmFunctionality>();
+		GAFunctions = _GAFunctions;
 	}
 }
 
@@ -48,7 +49,7 @@ uint32 FGeneticAlgorithmThread::Run()
 			// Enqueues the fittest Genomes that have been tested. Only those that have beaten the previous highest fitness score are allowed to join.
 			CurrentGAController->ThreadNewEnemyQueue.Enqueue(GAFunctions->GetCurrentBestGenomes());
 			GenerationCount++;
-			UE_LOG(GeneticAlgorithmModule, Display, TEXT("Generation Number: %d"), GenerationCount);
+			//UE_LOG(GeneticAlgorithmModule, Display, TEXT("Generation Number: %d"), GenerationCount);
 		}
 		else
 		{

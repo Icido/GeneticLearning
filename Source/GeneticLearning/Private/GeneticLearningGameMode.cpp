@@ -2,6 +2,7 @@
 
 #include "GeneticLearningHUD.h"
 #include "GeneticLearningCharacter.h"
+#include "GeneticAlgorithmController.h"
 #include "SmartEnemySpawnPoint.h"
 #include "ToolBuilderUtil.h"
 #include "Kismet/GameplayStatics.h"
@@ -21,7 +22,6 @@ AGeneticLearningGameMode::AGeneticLearningGameMode()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	GAController = CreateDefaultSubobject<UGeneticAlgorithmController>(TEXT("GA Controller"));
 }
 
 void AGeneticLearningGameMode::BeginPlay()
@@ -30,8 +30,11 @@ void AGeneticLearningGameMode::BeginPlay()
 
 	//To gather all Spawn Points for reference
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASmartEnemySpawnPoint::StaticClass(), SpawnPoints);
+	
+	GAController = NewObject<AGeneticAlgorithmController>();
+	GAController->CreateFoo();
 
-	//GAController->InitGenerations(20000);
+	GAController->InitGenerations(20000);
 	
 	// Assert to ensure there's no leftover SmartEnemies that may disrupt initialization
 	check(AllSmartEnemiesDead());
@@ -71,7 +74,7 @@ void AGeneticLearningGameMode::Tick(float DeltaSeconds)
 
 void AGeneticLearningGameMode::WaveCheck(ASmartEnemy* LastSmartEnemyKilled)
 {
-	//GAController->InitGenerations(1000);
+	GAController->InitGenerations(1000);
 
 	if(LastSmartEnemyKilled != nullptr)
 	{

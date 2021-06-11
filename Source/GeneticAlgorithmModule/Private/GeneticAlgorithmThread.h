@@ -5,7 +5,7 @@
 
 //Forward declarations
 class FRunnableThread;
-class UGeneticAlgorithmController;
+class AGeneticAlgorithmController;
 class UGeneticAlgorithmFunctionality;
 class UGenomes;
 class UGenomeHelper;
@@ -15,13 +15,13 @@ class GENETICALGORITHMMODULE_API FGeneticAlgorithmThread : public FRunnable
 	
 public:	
 	// Default constructor that takes in the number of Generations to take place initially and the Controller for the thread
-	FGeneticAlgorithmThread(int32 _Generations, UGeneticAlgorithmController *_UGAController);
+	FGeneticAlgorithmThread(UGeneticAlgorithmFunctionality* _GAFunctions, int32 _Generations, AGeneticAlgorithmController *_UGAController);
 
 	// Additional constructor that takes in any previous information that may have been obtained the last time the thread was stopped, as to not start from scratch
-	FGeneticAlgorithmThread(TArray<UGenomes*> _CurrentGenerationGenomes, double _GlobalBestFitness, int32 _Generations, UGeneticAlgorithmController *_UGAController);
+	FGeneticAlgorithmThread(UGeneticAlgorithmFunctionality* _GAFunctions, TArray<UGenomes*> _CurrentGenerationGenomes, double _GlobalBestFitness, int32 _Generations, AGeneticAlgorithmController *_UGAController);
 
 	// Helper function to prevent code duplication across both constructors
-	void NewThread(int32 _Generations, UGeneticAlgorithmController* _UGAController);
+	void NewThread(UGeneticAlgorithmFunctionality* _GAFunctions, int32 _Generations, AGeneticAlgorithmController* _UGAController);
 
 	bool bStopThread = true;
 
@@ -53,7 +53,7 @@ private:
 	// Current Generation number
 	int32 GenerationCount;
 
-	UGeneticAlgorithmController *CurrentGAController = nullptr;
+	AGeneticAlgorithmController *CurrentGAController = nullptr;
 
 	UGeneticAlgorithmFunctionality *GAFunctions = nullptr;
 

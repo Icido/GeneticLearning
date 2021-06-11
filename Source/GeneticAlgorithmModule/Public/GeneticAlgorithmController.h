@@ -7,22 +7,28 @@
 
 // Forward declarations
 class UGenomes;
+class UGeneticAlgorithmFunctionality;
 
 UCLASS()
-class GENETICALGORITHMMODULE_API UGeneticAlgorithmController : public UActorComponent
+class GENETICALGORITHMMODULE_API AGeneticAlgorithmController : public AActor
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UGeneticAlgorithmController();
+	AGeneticAlgorithmController();
 
+	void CreateFoo();
+	
 	/**
-	 * @brief Initializes a thread (if not already running) and adds to the number of Generations that are completed
-	 * @param _NumGenerations Number of additional Generations that the algorithm executes
-	 */
+	* @brief Initializes a thread (if not already running) and adds to the number of Generations that are completed
+	* @param _NumGenerations Number of additional Generations that the algorithm executes
+	*/
 	UFUNCTION(BlueprintCallable, Category = "Genetic Algorithm")
 	void InitGenerations(int32 _NumGenerations);
+	
+	UPROPERTY(VisibleAnywhere)
+	UGeneticAlgorithmFunctionality *GAFunctions = nullptr;
 
 	/**
 	* @returns Retrieve a new enemy's stats
@@ -51,7 +57,7 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime);
 
 	// Called for the sake of thread safety
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

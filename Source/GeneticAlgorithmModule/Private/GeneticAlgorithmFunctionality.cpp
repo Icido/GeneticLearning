@@ -22,16 +22,23 @@ UGeneticAlgorithmFunctionality::UGeneticAlgorithmFunctionality(): Super()
 		CurrentGenerationGenomes.Push(Child);
 
 		UGenomes* SecondChild = NewObject<UGenomes>();
+		SecondChild->InitGenome(ChromosomeLength);
+		SecondChild->Verify();
 		Children.Push(SecondChild);
 	}
 
 	GHelper = NewObject<UGenomeHelper>();
 	SEConvert = NewObject<USmartEnemyConversion>();
 	SETest = NewObject<USmartEnemyTest>();
+	
 	Mother = NewObject<UGenomes>();
+	Mother->InitGenome(ChromosomeLength);
    	Father = NewObject<UGenomes>();
+   	Father->InitGenome(ChromosomeLength);
    	Child1 = NewObject<UGenomes>();
+	Child1->InitGenome(ChromosomeLength);
    	Child2 = NewObject<UGenomes>();
+	Child2->InitGenome(ChromosomeLength);
 }
 
 void UGeneticAlgorithmFunctionality::SetCurrentGeneration(TArray<UGenomes*> _LastGenerationGenomes)
@@ -49,6 +56,8 @@ TArray<UGenomes*> UGeneticAlgorithmFunctionality::GetCurrentGeneration() const
 
 TArray<TArray<float>> UGeneticAlgorithmFunctionality::GetCurrentBestGenomes() const
 {
+	UE_LOG(GeneticAlgorithmModule, Display, TEXT("Retrieving CurrentBestGenomes"));
+
 	return BestAvailableGenomesDecoded;
 }
 
@@ -144,15 +153,12 @@ void UGeneticAlgorithmFunctionality::Epoch()
 }
 
 void UGeneticAlgorithmFunctionality::Crossover(UGenomes* _Mother, UGenomes* _Father, UGenomes* _Child1, UGenomes* _Child2) const
-{
-	_Child1->Bits.Empty();
-	_Child2->Bits.Empty();
-	
+{	
 	//If it's above crossover rate or parents are the same, copy through
 	if(FMath::FRand() > CrossoverRate || _Mother->Bits == _Father->Bits)
 	{
-		_Child1->Bits.Append(_Mother->Bits);
-		_Child2->Bits.Append(_Father->Bits);
+		_Child1->AssignBits(_Mother->Bits);
+		_Child2->AssignBits(_Father->Bits);
 		
 		return;
 	}
@@ -161,14 +167,14 @@ void UGeneticAlgorithmFunctionality::Crossover(UGenomes* _Mother, UGenomes* _Fat
 
 	for (int i = 0; i < CrossoverPoint; i++)
 	{
-		_Child1->Bits.Push(_Father->Bits[i]);
-		_Child2->Bits.Push(_Mother->Bits[i]);
+		_Child1->AssignSingleBit(i, _Father->Bits[i]);
+		_Child2->AssignSingleBit(i, _Mother->Bits[i]);
 	}
 
 	for (int i = CrossoverPoint; i < _Father->Bits.Num() && i < _Mother->Bits.Num(); i++)
 	{
-		_Child1->Bits.Push(_Mother->Bits[i]);
-		_Child2->Bits.Push(_Father->Bits[i]);
+		_Child1->AssignSingleBit(i, _Mother->Bits[i]);
+		_Child2->AssignSingleBit(i, _Father->Bits[i]);
 	}
 }
 
@@ -198,6 +204,8 @@ void UGeneticAlgorithmFunctionality::UpdateFitnessScores()
 			BestGenomes = CurrentGenerationGenomes[i];
 			GenerationOfGlobalBestFitnessScore = GenerationNumber;
 			
+			UE_LOG(GeneticAlgorithmModule, Display, TEXT("New Enemy decrypted"));
+
 			BestAvailableGenomesDecoded.Push(SEConvert->GenomeToEnemy(CurrentGenerationGenomes[i], GeneLength));
 
 			if (GlobalBestFitnessScore < 1 && GlobalBestFitnessScore > 0.95)

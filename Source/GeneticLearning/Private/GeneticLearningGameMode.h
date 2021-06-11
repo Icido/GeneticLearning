@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 
-#include "GeneticAlgorithmController.h"
 #include "SmartEnemy.h"
 #include "GameFramework/GameModeBase.h"
 #include "GeneticLearningGameMode.generated.h"
@@ -33,7 +32,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void WaveInitialization();
+
 	
+	UPROPERTY(VisibleAnywhere)
+	class AGeneticAlgorithmController* GAController;
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -45,8 +47,6 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ASmartEnemy> SmartEnemyBP;
 
-	UPROPERTY()
-	UGeneticAlgorithmController* GAController;
 };
 
 

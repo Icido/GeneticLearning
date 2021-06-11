@@ -44,7 +44,7 @@ void USmartEnemyStats::AssignStats(TArray<float> _Stats)
 {
 	if(_Stats.Num() != 8)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Number of Stats does not match required stats: %d"), _Stats.Num());
+		UE_LOG(LogTemp, Error, TEXT("Number of Stats does not match required stats: %d"), _Stats.Num());		
 		return;
 	}
 	

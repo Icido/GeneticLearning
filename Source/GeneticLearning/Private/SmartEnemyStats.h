@@ -62,5 +62,5 @@ public:
 	void AssignStats(TArray<float> _Stats);
 
 	UPROPERTY(EditAnywhere)
-    FEnemyStats Stats {10, 1, 1, 1, 1, 1, 1, 1};
+    FEnemyStats Stats {30, 1, 1, 1, 1, 1, 1, 1};
 };
