@@ -130,7 +130,7 @@ public:
 
 	/** @brief Global Best Fitness Score is persistent across all Generations, even if the thread is finished */
 	UPROPERTY()
-	double GlobalBestFitnessScore = 0;
+	double GlobalBestFitnessScore = -1;
 
 	
 

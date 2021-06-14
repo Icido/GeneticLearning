@@ -18,7 +18,8 @@ public:
 	// Sets default values for this component's properties
 	AGeneticAlgorithmController();
 
-	void CreateFoo();
+	UFUNCTION(BlueprintCallable, Category = "Genetic Algorithm")
+	void Setup();
 	
 	/**
 	* @brief Initializes a thread (if not already running) and adds to the number of Generations that are completed
@@ -33,12 +34,13 @@ public:
 	/**
 	* @returns Retrieve a new enemy's stats
 	*/
-	TArray<float> GetNewEnemy() const;
+	TArray<float> GetNewEnemy();
+
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
+	TArray<float> EnemySelect() const;
+	
 	/**
 	 * @brief Retrieves the latest generation of genomes, as well as the best fitness score so far, from the queue holding the data
 	 */
@@ -56,8 +58,6 @@ protected:
 	FRunnableThread *CurrentRunningThread = nullptr;
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime);
 
 	// Called for the sake of thread safety
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

@@ -32,9 +32,9 @@ void AGeneticLearningGameMode::BeginPlay()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASmartEnemySpawnPoint::StaticClass(), SpawnPoints);
 	
 	GAController = NewObject<AGeneticAlgorithmController>();
-	GAController->CreateFoo();
+	GAController->Setup();
 
-	GAController->InitGenerations(20000);
+	GAController->InitGenerations(5000);
 	
 	// Assert to ensure there's no leftover SmartEnemies that may disrupt initialization
 	check(AllSmartEnemiesDead());
