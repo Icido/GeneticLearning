@@ -42,7 +42,6 @@ void AGeneticAlgorithmController::InitGenerations(int32 _NumGenerations)
 		
 		check(GAFunctions != NULL);
 
-		//TODO: Check if content within threadqueues remain after thread is finished - if so, this would need to be called before thread closes as to hold locally
 		RetrieveCurrentGenerationFromThread();
 
 		if(CurrentGeneration.Num() == 0)
@@ -102,7 +101,7 @@ void AGeneticAlgorithmController::RetrieveNewEnemiesFromThread()
 {
 	if(!ThreadNewEnemyQueue.IsEmpty() && ThreadNewEnemyQueue.Dequeue(CurrentUsableEnemies))
 	{
-		//UE_LOG(GeneticAlgorithmModule, Display, TEXT("Dequeued CurrentUsableEnemies."));
+		// UE_LOG(GeneticAlgorithmModule, Display, TEXT("Dequeued CurrentUsableEnemies."));
 	}
 }
 
@@ -120,5 +119,7 @@ void AGeneticAlgorithmController::EndPlay(const EEndPlayReason::Type EndPlayReas
 
 		delete GAThread;
 	}
+
+
 }
 

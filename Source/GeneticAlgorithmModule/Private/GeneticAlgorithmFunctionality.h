@@ -44,6 +44,9 @@ public:
 	void CopyChildren();
 
 	UFUNCTION()
+	bool CheckDecodedDuplicate(TArray<float> _decodedGenome) const;
+
+	UFUNCTION()
 	void CheckGeneration();
 	/**
 	* @brief The encompassing function that tests the current generation and creates a new generation if it has not reached perfection
@@ -128,9 +131,9 @@ public:
 	UPROPERTY()
 	double TotalFitnessScore = 0;
 
-	/** @brief Global Best Fitness Score is persistent across all Generations, even if the thread is finished */
+	/** @brief Global Best Fitness Score is persistent across all Generations, even if the thread is finished - can be set for minimum entry */
 	UPROPERTY()
-	double GlobalBestFitnessScore = -1;
+	double GlobalBestFitnessScore = 0.2;
 
 	
 

@@ -72,6 +72,19 @@ void UGeneticAlgorithmFunctionality::CopyChildren()
 	}
 }
 
+bool UGeneticAlgorithmFunctionality::CheckDecodedDuplicate(TArray<float> _decodedGenome) const
+{	
+	for (auto CurrentGenome : BestAvailableGenomesDecoded)
+	{
+		check(CurrentGenome.Num() == _decodedGenome.Num())
+		
+		if(_decodedGenome == CurrentGenome)
+			return false;
+	}
+
+	return true;
+}
+
 void UGeneticAlgorithmFunctionality::CheckGeneration()
 {
 	check(CurrentGenerationGenomes.Num() == PopulationSize);
@@ -92,29 +105,20 @@ void UGeneticAlgorithmFunctionality::CheckGeneration()
 
 void UGeneticAlgorithmFunctionality::Epoch()
 {
-	CheckGeneration();
-	
 	// Updates the Fitness Scores of the Current Generation
 	UpdateFitnessScores();
-
-	CheckGeneration();
+	
 	// If there's been no perfection yet (according to the UpdateFitnessScores() - Create a new generation
 	if(!bHasFoundPerfection)
 	{
 		int32 NumberOfNewChildren = 0;
-
-		CheckGeneration();
 		
 		while(NumberOfNewChildren < PopulationSize)
-		{
-			CheckGeneration();
-			
+		{			
 			//FGenomes* Mother = GHelper->RouletteWheelSelection(CurrentGenerationGenomes, TotalFitnessScore, PopulationSize);
 			//FGenomes* Father = GHelper->RouletteWheelSelection(CurrentGenerationGenomes, TotalFitnessScore, PopulationSize);
 			Mother->AssignBits(GHelper->RouletteWheelSelection(CurrentGenerationGenomes, TotalFitnessScore, PopulationSize));
 			Father->AssignBits(GHelper->RouletteWheelSelection(CurrentGenerationGenomes, TotalFitnessScore, PopulationSize));
-
-			CheckGeneration();
 			
 			check(Mother->Bits.Num() == ChromosomeLength);
 			check(Father->Bits.Num() == ChromosomeLength);
@@ -124,30 +128,20 @@ void UGeneticAlgorithmFunctionality::Epoch()
 			check(Child1->Bits.Num() == ChromosomeLength);
 			check(Child2->Bits.Num() == ChromosomeLength);
 			
-			CheckGeneration();
-			
 			GHelper->Mutate(Child1, MutationRate);
 			GHelper->Mutate(Child2, MutationRate);
 
 			check(Child1->Bits.Num() == ChromosomeLength);
 			check(Child2->Bits.Num() == ChromosomeLength);
 
-			CheckGeneration();
-			
 			Children[NumberOfNewChildren]->AssignBits(Child1->Bits);
 			Children[NumberOfNewChildren + 1]->AssignBits(Child2->Bits);
-
-			CheckGeneration();
 			
 			NumberOfNewChildren += 2;
 		}
-
-		CheckGeneration();
 		
 		CopyChildren();
 
-		CheckGeneration();
-		
 		GenerationNumber++;
 	}
 }
@@ -190,10 +184,10 @@ void UGeneticAlgorithmFunctionality::UpdateFitnessScores()
 		check(CurrentGenerationGenomes[i] != nullptr);
 		check(CurrentGenerationGenomes.IsValidIndex(i));
 		
-		//CurrentGenerationGenomes[i]->Verify();
+		CurrentGenerationGenomes[i]->Verify();
 
 		CurrentGenerationGenomes[i]->Fitness = 0;
-		
+
 		CurrentGenerationGenomes[i]->Fitness = SETest->FitnessTest(SEConvert->GenomeToEnemy(CurrentGenerationGenomes[i], GeneLength));
 		
 		TotalFitnessScore += CurrentGenerationGenomes[i]->Fitness;
@@ -206,7 +200,10 @@ void UGeneticAlgorithmFunctionality::UpdateFitnessScores()
 			
 			UE_LOG(GeneticAlgorithmModule, Display, TEXT("New Enemy decrypted"));
 
-			BestAvailableGenomesDecoded.Push(SEConvert->GenomeToEnemy(CurrentGenerationGenomes[i], GeneLength));
+			TArray<float> CurrentFitGenome = SEConvert->GenomeToEnemy(CurrentGenerationGenomes[i], GeneLength);
+
+			if(CheckDecodedDuplicate(CurrentFitGenome))
+				BestAvailableGenomesDecoded.Push(CurrentFitGenome);
 
 			if (GlobalBestFitnessScore < 1 && GlobalBestFitnessScore > 0.95)
 			{

@@ -70,7 +70,6 @@ public:
 	UPROPERTY()
 	double GlobalBestFitness = 0;
 
-	//TODO: Change TQueue to something readable for use in creating Smart Enemies (possibly, works currently with SEConvert being used in SE)
 	// The queues used to obtain data from the thread 
 	TQueue<TArray<UGenomes*>> ThreadGenomeGenerationQueue;
 	TQueue<TArray<TArray<float>>> ThreadNewEnemyQueue;

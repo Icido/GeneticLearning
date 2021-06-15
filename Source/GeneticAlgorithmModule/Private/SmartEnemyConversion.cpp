@@ -53,7 +53,7 @@ TArray<float> USmartEnemyConversion::DecodedMutations(TArray<int32> _Mutations, 
 
 	const float MaxGeneValue = FMath::Pow(2, _GeneLength); // 255.f, Maximum from 8 bits
 
-	for(int32 i = 0; i < 7; i++)
+	for(int32 i = 0; i < _Mutations.Num(); i++)
 	{
 		if(!_Mutations.IsValidIndex(i))
 		{

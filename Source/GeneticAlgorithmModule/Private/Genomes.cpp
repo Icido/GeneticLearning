@@ -12,7 +12,8 @@ void UGenomes::InitGenome(int32 _NumBits)
 
 	if(Bits.Num() > 0)
 		UE_LOG(LogClass, Fatal, TEXT("Bits were not emptied."));
-	
+
+	//TODO: Figure why bits are almost always initialized to 0 on first creation (resulting in all mutations being the same at startup)
 	for(int32 i = 0; i < _NumBits; i++)
 	{
 		uint32 Seed1 = 0;

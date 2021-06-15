@@ -57,6 +57,5 @@ private:
 
 	UGeneticAlgorithmFunctionality *GAFunctions = nullptr;
 
-	// TODO: Utilize Genome Helper to convert Genomes to TArray<bool> for output, so not to use Genomes outside of the thread - not currently initialized or in use
 	UGenomeHelper *GHelper;
 };
