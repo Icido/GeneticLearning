@@ -13,26 +13,29 @@ void UGenomes::InitGenome(int32 _NumBits)
 	if(Bits.Num() > 0)
 		UE_LOG(LogClass, Fatal, TEXT("Bits were not emptied."));
 
-	//TODO: Figure why bits are almost always initialized to 0 on first creation (resulting in all mutations being the same at startup)
 	for(int32 i = 0; i < _NumBits; i++)
 	{
-		uint32 Seed1 = 0;
-		uint32 Seed2 = 0;
+		/* This seeding initialization makes it consistent - remove at once
+		// uint32 Seed1 = 0;
+		// uint32 Seed2 = 0;
+		// 
+		// if (!FApp::bUseFixedSeed)
+		// {
+		// 	Seed1 = FDateTime::Now().GetHour() * FDateTime::Now().GetDay()  * FDateTime::Now().GetSecond() + FDateTime::Now().GetMillisecond() * (_NumBits + 1);
+		// 	Seed2 = FDateTime::Now().GetMonth() * FDateTime::Now().GetMinute() + FDateTime::Now().GetTicks()  * (_NumBits + 1);
+		// }
+		//
+		// FMath::RandInit(Seed1);
+		// FMath::SRandInit(Seed2);
+		*/
 
-		if (!FApp::bUseFixedSeed)
-		{
-			Seed1 = FDateTime::Now().GetHour() * FDateTime::Now().GetDay()  * FDateTime::Now().GetSecond() + FDateTime::Now().GetMillisecond() * (_NumBits + 1);
-			Seed2 = FDateTime::Now().GetMonth() * FDateTime::Now().GetMinute() + FDateTime::Now().GetTicks()  * (_NumBits + 1);
-		}
-
-		FMath::RandInit(Seed1);
-		FMath::SRandInit(Seed2);
-
-		FRandomStream NewRandomStream;
-		NewRandomStream.Initialize(FMath::Rand());
+		/* FRandomStream can be used instead of FMath::RandBool() - Check which is better (FMath::RandBool() might be better for boolean rand) 
+		// FRandomStream NewRandomStream;
+		// NewRandomStream.Initialize(FMath::Rand());
+		// bool NewBit = NewRandomStream.RandRange(0, 1) == 0 ? false : true;
+		*/
 		
-		bool NewBit = NewRandomStream.RandRange(0, 1) == 0 ? false : true;
-		//bool NewBit = FMath::RandBool;
+		bool NewBit = FMath::RandBool();
 
 		verify(NewBit == true || NewBit == false);
 		

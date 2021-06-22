@@ -2,13 +2,6 @@
 #include "Genomes.h"
 #include "GeneticAlgorithmModule.h"
 
-UGenomeHelper::UGenomeHelper() : Super()
-{
-	//TODO: Stop using this DefaultGenome if not used - currently uses hard-coded chromosome number
-	DefaultGenome = NewObject<UGenomes>();
-	DefaultGenome->InitGenome(56);
-}
-
 TArray<bool> UGenomeHelper::RouletteWheelSelection(TArray<UGenomes*> _CurrentGeneration, double _TotalFitnessScore, int32 _PopulationSize)
 {
 	const double Slice = FMath::FRand() * _TotalFitnessScore;
@@ -36,7 +29,7 @@ TArray<bool> UGenomeHelper::RouletteWheelSelection(TArray<UGenomes*> _CurrentGen
 	}
 	
 	if(_CurrentGeneration.Last() == nullptr || _CurrentGeneration.Last()->Fitness == NULL)
-		return DefaultGenome->Bits;
+		UE_LOG(GeneticAlgorithmModule, Fatal, TEXT("Last Genome selection is NULL selection - cannot select."));
 	
 	return _CurrentGeneration[0]->Bits;
 }
