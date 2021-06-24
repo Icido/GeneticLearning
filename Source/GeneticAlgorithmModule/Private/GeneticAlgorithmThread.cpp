@@ -49,12 +49,10 @@ uint32 FGeneticAlgorithmThread::Run()
 			// Enqueues the fittest Genomes that have been tested. Only those that have beaten the previous highest fitness score are allowed to join.
 			CurrentGAController->ThreadNewEnemyQueue.Enqueue(GAFunctions->GetCurrentBestGenomes());
 			GenerationCount++;
-			UE_LOG(GeneticAlgorithmModule, Display, TEXT("Generation Number: %d"), GenerationCount);
+			// UE_LOG(GeneticAlgorithmModule, Display, TEXT("Generation Number: %d"), GenerationCount);
 		}
 		else
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Black, FString::Printf(TEXT("Stopping thread - Finished %i calculations."), Generations));
-
 			// Enqueues the latest generation and best fitness score so far in order for it to be reused later when the thread is reactivated 
 			CurrentGAController->ThreadGenomeGenerationQueue.Enqueue(GAFunctions->GetCurrentGeneration());
 			CurrentGAController->ThreadGlobalBestFitnessScoreQueue.Enqueue(GAFunctions->GlobalBestFitnessScore);

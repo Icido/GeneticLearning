@@ -29,16 +29,17 @@ TArray<bool> UGenomeHelper::RouletteWheelSelection(TArray<UGenomes*> _CurrentGen
 	}
 	
 	if(_CurrentGeneration.Last() == nullptr || _CurrentGeneration.Last()->Fitness == NULL)
-		UE_LOG(GeneticAlgorithmModule, Fatal, TEXT("Last Genome selection is NULL selection - cannot select."));
+		UE_LOG(GeneticAlgorithmModule, Error, TEXT("Last Genome selection is NULL selection - selecting First Genome."));
+
+	if(_CurrentGeneration[0] == nullptr || _CurrentGeneration[0]->Fitness == NULL)
+		UE_LOG(GeneticAlgorithmModule, Fatal, TEXT("First Genome selection is NULL selection - cannot select any Genome."));
+
 	
 	return _CurrentGeneration[0]->Bits;
 }
 
 void UGenomeHelper::Mutate(UGenomes* _MutatingGenome, double _MutationRate)
-{
-	//FGenomes* MutatedGenome = new FGenomes;
-	//MutatedGenome->ClearGenome();
-	
+{	
 	for (int i = 0; i < _MutatingGenome->Bits.Num(); i++)
 	{
 		if(FMath::FRand() < _MutationRate)
@@ -46,8 +47,4 @@ void UGenomeHelper::Mutate(UGenomes* _MutatingGenome, double _MutationRate)
 			_MutatingGenome->Bits[i] = !_MutatingGenome->Bits[i];
 		}
 	}
-	
-	//MutatedGenome->Bits.Append(_MutatingGenome->Bits);
-	
-	//return MutatedGenome;
 }

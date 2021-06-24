@@ -12,7 +12,7 @@ TArray<int32> USmartEnemyConversion::DecodeGenome(UGenomes* _Genomes, int32 _Gen
 
 	for(int32 GeneIndex = 0; GeneIndex < BitsSize; GeneIndex += _GeneLength)
 	{
-		TArray<bool> Gene; // TArray<int32>
+		TArray<bool> Gene;
 
 		for(int32 BitIndex = 0; BitIndex < _GeneLength; BitIndex++)
 		{
@@ -46,7 +46,7 @@ int32 USmartEnemyConversion::GeneToInt32(TArray<bool> _Gene)
 	return Value;
 }
 
-
+// TODO: Restructure to account for user preferences for output
 TArray<float> USmartEnemyConversion::DecodedMutations(TArray<int32> _Mutations, int32 _GeneLength)
 {
 	TArray<float> NewEnemyAttributes;

@@ -45,31 +45,6 @@ void AGeneticLearningGameMode::BeginPlay()
 void AGeneticLearningGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	/*
-	Wave Controller:
-	void Spawn New Enemies - called each time a smart enemy dies (cleaner to do so) - DELEGATE - DONE
-		If all Smart Enemies are dead:
-			Gather GA data - DONE
-			Spawn new enemies with renewed data - DONE
-	
-	Smart Enemy created:
-		Takes in new data from Wave Controller - DONE
-		Assigns stats and subsequent attack preference - DONE
-		Begin AI attacking - Do after GA is working, SmartEnemyTest should reflect AI
-	
-	Smart Enemy death:
-		Send current player data to be fed into the GA - TODO: Figure out what information would be relevant
-		Shout delegate to Wave Controller - DELEGATE - DONE
-	
-	GA:
-		GAController - Invokes multi-generational epochs to obtain best enemy mutations - Useless, only invoked, did not have any value. - DONE
-		GA - Contains fitness scores of enemies along with mutation encoded as bits, mutates a generation per epoch - DONE
-		Genomes - Initialised as brand new randomized values of bits to act as the first generation - DONE
-		EnemyTest - A loop that the selected enemy is put through to test its fitness (by simulating fighting the player) - DONE
-		SmartEnemySetup - Helper functions to decode genes and alter them to usable attributes for the SmartEnemy - DONE
-		SmartEnemy - An enemy with allocated attributes and stats, no knowledge of any other data - DONE
-	*/
 }
 
 void AGeneticLearningGameMode::WaveCheck(ASmartEnemy* LastSmartEnemyKilled)
@@ -114,6 +89,7 @@ void AGeneticLearningGameMode::WaveInitialization()
 					
 					NewEnemy->OnDeath.AddDynamic(this, &AGeneticLearningGameMode::WaveCheck);
 					SpawnedSmartEnemies.Add(NewEnemy);
+					
 				}
 				else
 				{

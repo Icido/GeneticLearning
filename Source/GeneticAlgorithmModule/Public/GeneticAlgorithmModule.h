@@ -16,3 +16,9 @@ class FGeneticAlgorithmModule : public IModuleInterface
 
 	virtual void ShutdownModule() override;
 };
+
+// TODO: Send current player data to be fed into the GA - Figure out what information would be relevant
+// TODO: Clean up any error handling/unused functionality for smoother operation
+// TODO: Rework public functions for blueprint accessibility
+// TODO: Implement public functions to modify the algorithm for their needs (e.g. change test, num bits, generation sizes)
+// TODO: Comment and document any errant functionality to be as clear as possible for future use

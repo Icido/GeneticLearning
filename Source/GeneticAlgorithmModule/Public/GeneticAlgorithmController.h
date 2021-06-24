@@ -8,6 +8,7 @@
 // Forward declarations
 class UGenomes;
 class UGeneticAlgorithmFunctionality;
+class FGeneticAlgorithmThread;
 
 UCLASS()
 class GENETICALGORITHMMODULE_API AGeneticAlgorithmController : public AActor
@@ -28,13 +29,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Genetic Algorithm")
 	void InitGenerations(int32 _NumGenerations);
 	
-	UPROPERTY(VisibleAnywhere)
-	UGeneticAlgorithmFunctionality *GAFunctions = nullptr;
 
 	/**
 	* @returns Retrieve a new enemy's stats
 	*/
 	TArray<float> GetNewEnemy();
+
+	// TODO: Rework using these queues for Public Safety (possibly have a go-between class to prevent users finding it)
+	// The queues used to obtain data from the thread 
+	TQueue<TArray<UGenomes*>> ThreadGenomeGenerationQueue;
+	TQueue<TArray<TArray<float>>> ThreadNewEnemyQueue;
+	TQueue<double> ThreadGlobalBestFitnessScoreQueue;
 
 
 protected:
@@ -53,11 +58,14 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Genetic Algorithm")
 	void RetrieveNewEnemiesFromThread();
 
-	class FGeneticAlgorithmThread *GAThread = nullptr;
+	FGeneticAlgorithmThread *GAThread = nullptr;
 	
 	FRunnableThread *CurrentRunningThread = nullptr;
 
-public:	
+	UPROPERTY(VisibleAnywhere)
+	UGeneticAlgorithmFunctionality *GAFunctions = nullptr;
+	
+private:	
 
 	// Called for the sake of thread safety
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -69,11 +77,6 @@ public:
 	// The best fitness score of all generations so far - used to ensure that newer generations have a goal to aim toward before being considered "fitter"
 	UPROPERTY()
 	double GlobalBestFitness = 0;
-
-	// The queues used to obtain data from the thread 
-	TQueue<TArray<UGenomes*>> ThreadGenomeGenerationQueue;
-	TQueue<TArray<TArray<float>>> ThreadNewEnemyQueue;
-	TQueue<double> ThreadGlobalBestFitnessScoreQueue;
 
 	// Storage for the obtained Genomes
 	TArray<UGenomes*> CurrentGeneration;

@@ -7,9 +7,6 @@ void UGenomes::InitGenome(int32 _NumBits)
 	Fitness = 0;
 	Bits.Empty();
 
-	if(_NumBits > 56)
-		UE_LOG(LogClass, Fatal, TEXT("_NumBits were not initialized properly."));
-
 	if(Bits.Num() > 0)
 		UE_LOG(LogClass, Fatal, TEXT("Bits were not emptied."));
 
@@ -42,7 +39,7 @@ void UGenomes::InitGenome(int32 _NumBits)
 		Bits.Push(NewBit);
 	}
 
-	if(Bits.Num() > _NumBits)
+	if(Bits.Num() != _NumBits)
 		UE_LOG(LogClass, Fatal, TEXT("Genomes were not initialized properly."));
 }
 
@@ -59,14 +56,10 @@ void UGenomes::AssignBits(TArray<bool> _NewBits)
 
 	check(Bits.Num() > 0);
 	check(_NewBits.Num() == Bits.Num());
-
-	//Bits.Empty();
-	//Bits.Append(_NewBits);
 }
 
 void UGenomes::AssignSingleBit(int32 _BitIndex, bool _NewBit)
 {
-	//check(_NewBit == true || _NewBit == false);
 	check(Bits.IsValidIndex(_BitIndex));
 
 	Bits[_BitIndex] = _NewBit;
@@ -74,10 +67,10 @@ void UGenomes::AssignSingleBit(int32 _BitIndex, bool _NewBit)
 	check(Bits[_BitIndex] == _NewBit);
 }
 
-void UGenomes::Verify()
+void UGenomes::Verify(int32 _NumBits)
 {
-	if(Bits.Num() > 56)
-		UE_LOG(LogClass, Fatal, TEXT("Number of bits exceeds limit."));
+	if(Bits.Num() != _NumBits)
+		UE_LOG(LogClass, Fatal, TEXT("Number of bits is not equal to required number."));
 	
 	for (int32 i = 0; i < Bits.Num(); i++)
 	{

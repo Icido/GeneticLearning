@@ -1,5 +1,6 @@
 #include "SmartEnemyTest.h"
 
+// TODO: Reimplement in a method that the user can determine the Test
 double USmartEnemyTest::FitnessTest(TArray<float> _SmartEnemyAttributes) const
 {
 	int32 Timeout = 50;

@@ -31,8 +31,6 @@ void AGeneticAlgorithmController::InitGenerations(int32 _NumGenerations)
 			{
 				GAThread->AddGenerations(_NumGenerations);
 				CurrentRunningThread->Suspend(false);
-
-				UE_LOG(GeneticAlgorithmModule, Display, TEXT("Added %d additional generations."), _NumGenerations);
 				
 				return;
 			}
@@ -88,12 +86,12 @@ void AGeneticAlgorithmController::RetrieveCurrentGenerationFromThread()
 {
 	if(!ThreadGenomeGenerationQueue.IsEmpty() && ThreadGenomeGenerationQueue.Dequeue(CurrentGeneration))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, TEXT("Retrieved last generation."));
+		// UE_LOG(GeneticAlgorithmModule, Display, TEXT("Retrieved last generation."));
 	}
 
 	if(!ThreadGlobalBestFitnessScoreQueue.IsEmpty() && ThreadGlobalBestFitnessScoreQueue.Dequeue(GlobalBestFitness))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::Printf(TEXT("Last generation's current record of Fitness: %f"), GlobalBestFitness));
+		UE_LOG(GeneticAlgorithmModule, Display, TEXT("Last generation's current record of Fitness: %f"), GlobalBestFitness);
 	}
 }
 
@@ -105,6 +103,7 @@ void AGeneticAlgorithmController::RetrieveNewEnemiesFromThread()
 	}
 }
 
+// TODO: Fix thread shutdown to prevent crash
 void AGeneticAlgorithmController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
@@ -119,7 +118,5 @@ void AGeneticAlgorithmController::EndPlay(const EEndPlayReason::Type EndPlayReas
 
 		delete GAThread;
 	}
-
-
 }
 
