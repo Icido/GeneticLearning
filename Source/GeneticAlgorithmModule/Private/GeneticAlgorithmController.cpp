@@ -2,6 +2,7 @@
 
 #include "GeneticAlgorithmFunctionality.h"
 #include "GeneticAlgorithmModule.h"
+#include "GeneticAlgorithmResults.h"
 #include "GeneticAlgorithmThread.h"
 
 // Sets default values for this component's properties
@@ -13,6 +14,7 @@ AGeneticAlgorithmController::AGeneticAlgorithmController()
 void AGeneticAlgorithmController::Setup()
 {
 	GAFunctions = NewObject<UGeneticAlgorithmFunctionality>();
+	GAResults = NewObject<AGeneticAlgorithmResults>();
 }
 
 void AGeneticAlgorithmController::InitGenerations(int32 _NumGenerations)
@@ -40,16 +42,9 @@ void AGeneticAlgorithmController::InitGenerations(int32 _NumGenerations)
 		
 		check(GAFunctions != NULL);
 
-		RetrieveCurrentGenerationFromThread();
+		GAResults->RetrieveCurrentGenerationFromThread();
 
-		if(CurrentGeneration.Num() == 0)
-		{
-			GAThread = new FGeneticAlgorithmThread(GAFunctions, _NumGenerations, this);
-		}
-		else
-		{
-			GAThread = new FGeneticAlgorithmThread(GAFunctions, CurrentGeneration, GlobalBestFitness, _NumGenerations, this);
-		}
+		GAThread = new FGeneticAlgorithmThread(GAFunctions, _NumGenerations, GAResults);
 
 		CurrentRunningThread = FRunnableThread::Create(GAThread, TEXT("Genetic Algorithm Thread"));
 	}
@@ -59,48 +54,9 @@ void AGeneticAlgorithmController::InitGenerations(int32 _NumGenerations)
 	}
 }
 
-TArray<float> AGeneticAlgorithmController::GetNewEnemy()
+TArray<float> AGeneticAlgorithmController::GetNewEnemy() const
 {
-	RetrieveNewEnemiesFromThread();
-
-	return EnemySelect();
-}
-
-TArray<float> AGeneticAlgorithmController::EnemySelect() const
-{
-	if(CurrentUsableEnemies.Num() <= 0)
-	{
-		UE_LOG(GeneticAlgorithmModule, Warning, TEXT("No New Enemies available."));
-
-		return TArray<float> {};
-	}
-
-	const int32 EnemyIndex = FMath::Max3(FMath::RandRange(0, CurrentUsableEnemies.Num() - 1),
-										FMath::RandRange(0, CurrentUsableEnemies.Num() - 1),
-										FMath::RandRange(0, CurrentUsableEnemies.Num() - 1));
-	
-	return CurrentUsableEnemies[EnemyIndex];
-}
-
-void AGeneticAlgorithmController::RetrieveCurrentGenerationFromThread()
-{
-	if(!ThreadGenomeGenerationQueue.IsEmpty() && ThreadGenomeGenerationQueue.Dequeue(CurrentGeneration))
-	{
-		// UE_LOG(GeneticAlgorithmModule, Display, TEXT("Retrieved last generation."));
-	}
-
-	if(!ThreadGlobalBestFitnessScoreQueue.IsEmpty() && ThreadGlobalBestFitnessScoreQueue.Dequeue(GlobalBestFitness))
-	{
-		UE_LOG(GeneticAlgorithmModule, Display, TEXT("Last generation's current record of Fitness: %f"), GlobalBestFitness);
-	}
-}
-
-void AGeneticAlgorithmController::RetrieveNewEnemiesFromThread()
-{
-	if(!ThreadNewEnemyQueue.IsEmpty() && ThreadNewEnemyQueue.Dequeue(CurrentUsableEnemies))
-	{
-		// UE_LOG(GeneticAlgorithmModule, Display, TEXT("Dequeued CurrentUsableEnemies."));
-	}
+	return GAResults->EnemySelection();
 }
 
 // TODO: Fix thread shutdown to prevent crash

@@ -1,28 +1,26 @@
 #include "GeneticAlgorithmThread.h"
-#include "GeneticAlgorithmController.h"
+#include "GeneticAlgorithmResults.h"
 #include "GeneticAlgorithmFunctionality.h"
 #include "GeneticAlgorithmModule.h"
 
-FGeneticAlgorithmThread::FGeneticAlgorithmThread(UGeneticAlgorithmFunctionality* _GAFunctions, int32 _Generations, AGeneticAlgorithmController* _UGAController)
+FGeneticAlgorithmThread::FGeneticAlgorithmThread(UGeneticAlgorithmFunctionality* _GAFunctions, int32 _Generations, AGeneticAlgorithmResults* _AGAResults)
 {
-	NewThread(_GAFunctions, _Generations, _UGAController);
+	NewThread(_GAFunctions, _Generations, _AGAResults);
+
+	if(!_AGAResults->IsCurrentGenerationEmpty())
+	{
+		GAFunctions->SetCurrentGeneration(_AGAResults->RetrieveCurrentGenerationFromResults());
+		GAFunctions->GlobalBestFitnessScore = _AGAResults->RetrieveGlobalBestFitnessFromResults();
+	}
 }
 
-FGeneticAlgorithmThread::FGeneticAlgorithmThread(UGeneticAlgorithmFunctionality* _GAFunctions, TArray<UGenomes*> _CurrentGenerationGenomes, double _GlobalBestFitness, int32 _Generations,
-                                                 AGeneticAlgorithmController* _UGAController)
-{
-	NewThread(_GAFunctions, _Generations, _UGAController);
-	GAFunctions->SetCurrentGeneration(_CurrentGenerationGenomes);
-	GAFunctions->GlobalBestFitnessScore = _GlobalBestFitness;
-}
-
-void FGeneticAlgorithmThread::NewThread(UGeneticAlgorithmFunctionality* _GAFunctions, int32 _Generations, AGeneticAlgorithmController* _UGAController)
+void FGeneticAlgorithmThread::NewThread(UGeneticAlgorithmFunctionality* _GAFunctions, int32 _Generations, AGeneticAlgorithmResults* _AGAResults)
 {
 	
-	if(_Generations > 0 && _UGAController)
+	if(_Generations > 0 && _AGAResults)
 	{
 		Generations = _Generations;
-		CurrentGAController = _UGAController;
+		CurrentGAResults = _AGAResults;
 		bStopThread = false;
 		GAFunctions = _GAFunctions;
 	}
@@ -47,15 +45,15 @@ uint32 FGeneticAlgorithmThread::Run()
 			GAFunctions->Epoch();
 
 			// Enqueues the fittest Genomes that have been tested. Only those that have beaten the previous highest fitness score are allowed to join.
-			CurrentGAController->ThreadNewEnemyQueue.Enqueue(GAFunctions->GetCurrentBestGenomes());
+			CurrentGAResults->ThreadNewEnemyQueue.Enqueue(GAFunctions->GetCurrentBestGenomes());
 			GenerationCount++;
 			// UE_LOG(GeneticAlgorithmModule, Display, TEXT("Generation Number: %d"), GenerationCount);
 		}
 		else
 		{
 			// Enqueues the latest generation and best fitness score so far in order for it to be reused later when the thread is reactivated 
-			CurrentGAController->ThreadGenomeGenerationQueue.Enqueue(GAFunctions->GetCurrentGeneration());
-			CurrentGAController->ThreadGlobalBestFitnessScoreQueue.Enqueue(GAFunctions->GlobalBestFitnessScore);
+			CurrentGAResults->ThreadGenomeGenerationQueue.Enqueue(GAFunctions->GetCurrentGeneration());
+			CurrentGAResults->ThreadGlobalBestFitnessScoreQueue.Enqueue(GAFunctions->GlobalBestFitnessScore);
 
 			bStopThread = true;
 		}

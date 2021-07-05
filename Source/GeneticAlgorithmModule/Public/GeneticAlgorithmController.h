@@ -9,6 +9,7 @@
 class UGenomes;
 class UGeneticAlgorithmFunctionality;
 class FGeneticAlgorithmThread;
+class AGeneticAlgorithmResults;
 
 UCLASS()
 class GENETICALGORITHMMODULE_API AGeneticAlgorithmController : public AActor
@@ -33,30 +34,9 @@ public:
 	/**
 	* @returns Retrieve a new enemy's stats
 	*/
-	TArray<float> GetNewEnemy();
-
-	// TODO: Rework using these queues for Public Safety (possibly have a go-between class to prevent users finding it)
-	// The queues used to obtain data from the thread 
-	TQueue<TArray<UGenomes*>> ThreadGenomeGenerationQueue;
-	TQueue<TArray<TArray<float>>> ThreadNewEnemyQueue;
-	TQueue<double> ThreadGlobalBestFitnessScoreQueue;
-
+	TArray<float> GetNewEnemy() const;	
 
 protected:
-
-	TArray<float> EnemySelect() const;
-	
-	/**
-	 * @brief Retrieves the latest generation of genomes, as well as the best fitness score so far, from the queue holding the data
-	 */
-	UFUNCTION(BlueprintCallable, Category = "Genetic Algorithm")
-	void RetrieveCurrentGenerationFromThread();
-
-	/**
-	 * @brief Retrieves the current queue of genomes that represents the fittest enemies. These enemies are already sorted by fitness, with the last being the fittest
-	 */
-	UFUNCTION(BlueprintCallable, Category = "Genetic Algorithm")
-	void RetrieveNewEnemiesFromThread();
 
 	FGeneticAlgorithmThread *GAThread = nullptr;
 	
@@ -64,6 +44,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UGeneticAlgorithmFunctionality *GAFunctions = nullptr;
+
+	UPROPERTY(VisibleAnywhere)
+	AGeneticAlgorithmResults *GAResults = nullptr;
 	
 private:	
 
@@ -73,14 +56,4 @@ private:
 	// Total number of Generations that has been calculated
 	UPROPERTY()
 	int32 TotalGenerations = 0;
-
-	// The best fitness score of all generations so far - used to ensure that newer generations have a goal to aim toward before being considered "fitter"
-	UPROPERTY()
-	double GlobalBestFitness = 0;
-
-	// Storage for the obtained Genomes
-	TArray<UGenomes*> CurrentGeneration;
-
-	// Storage for the obtained converted Genomes
-	TArray<TArray<float>> CurrentUsableEnemies;
 };
