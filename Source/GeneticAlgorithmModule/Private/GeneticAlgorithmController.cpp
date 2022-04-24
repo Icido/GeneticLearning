@@ -9,6 +9,7 @@
 AGeneticAlgorithmController::AGeneticAlgorithmController()
 {
 	// ...
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void AGeneticAlgorithmController::Setup()
@@ -59,20 +60,37 @@ TArray<float> AGeneticAlgorithmController::GetNewEnemy() const
 	return GAResults->EnemySelection();
 }
 
+void AGeneticAlgorithmController::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	UE_LOG(GeneticAlgorithmModule, Warning, TEXT("GAController BeginPlay text."));
+}
+
+void AGeneticAlgorithmController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
 // TODO: Fix thread shutdown to prevent crash
 void AGeneticAlgorithmController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
+	UE_LOG(GeneticAlgorithmModule, Warning, TEXT("GAController EndPlay text."));
+
 	if(CurrentRunningThread && GAThread)
 	{
 		CurrentRunningThread->Suspend(true);
-		GAThread->bStopThread = true;
+		GAThread->Stop();
 		CurrentRunningThread->Suspend(false);
-		CurrentRunningThread->Kill(false);
 		CurrentRunningThread->WaitForCompletion();
-
+		CurrentRunningThread->Kill(true);
+		
 		delete GAThread;
 	}
+
+	UE_LOG(GeneticAlgorithmModule, Warning, TEXT("GAController Thread stopped."));
+
 }
 

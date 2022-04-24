@@ -1,4 +1,7 @@
 #include "SmartEnemyConversion.h"
+
+#include <string>
+
 #include "Genomes.h"
 
 TArray<int32> USmartEnemyConversion::DecodeGenome(UGenomes* _Genomes, int32 _GeneLength)
@@ -60,7 +63,7 @@ TArray<float> USmartEnemyConversion::DecodedMutations(TArray<int32> _Mutations, 
 			UE_LOG(LogClass, Fatal, TEXT("Mutations were not initialized properly."));
 		}
 	}
-	
+
 	const float ArmLength = _Mutations[0];
 	const float ClawLength = _Mutations[1];
 	const float ThroatLength = _Mutations[2];

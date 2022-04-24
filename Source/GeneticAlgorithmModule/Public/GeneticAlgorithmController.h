@@ -1,7 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "GameFramework/Actor.h"
+//#include "Components/ActorComponent.h"
 #include "HAL/RunnableThread.h"
 #include "GeneticAlgorithmController.generated.h"
 
@@ -34,7 +35,10 @@ public:
 	/**
 	* @returns Retrieve a new enemy's stats
 	*/
-	TArray<float> GetNewEnemy() const;	
+	TArray<float> GetNewEnemy() const;
+	
+	// Called for the sake of thread safety
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 protected:
 
@@ -47,11 +51,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	AGeneticAlgorithmResults *GAResults = nullptr;
-	
-private:	
 
-	// Called for the sake of thread safety
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+	
+private:
+
 
 	// Total number of Generations that has been calculated
 	UPROPERTY()

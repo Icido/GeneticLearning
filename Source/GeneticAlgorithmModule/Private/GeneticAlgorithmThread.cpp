@@ -55,16 +55,20 @@ uint32 FGeneticAlgorithmThread::Run()
 			CurrentGAResults->ThreadGenomeGenerationQueue.Enqueue(GAFunctions->GetCurrentGeneration());
 			CurrentGAResults->ThreadGlobalBestFitnessScoreQueue.Enqueue(GAFunctions->GlobalBestFitnessScore);
 
-			bStopThread = true;
+			
+			Stop();
 		}
 	}
-
+	
 	return 0;
 }
 
 void FGeneticAlgorithmThread::Stop()
 {
 	//Any cleanup can be done here
+	FPlatformProcess::Sleep(0.01f);
+	//UE_LOG(GeneticAlgorithmModule, Display, TEXT("Finished thread"));
+	bStopThread = true;
 }
 
 void FGeneticAlgorithmThread::AddGenerations(int32 _AdditionalGenerations)

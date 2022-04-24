@@ -24,9 +24,9 @@ AGeneticLearningGameMode::AGeneticLearningGameMode()
 
 }
 
-void AGeneticLearningGameMode::BeginPlay()
+void AGeneticLearningGameMode::StartPlay()
 {
-	Super::BeginPlay();
+	Super::StartPlay();
 
 	//To gather all Spawn Points for reference
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASmartEnemySpawnPoint::StaticClass(), SpawnPoints);
@@ -35,6 +35,7 @@ void AGeneticLearningGameMode::BeginPlay()
 	GAController->Setup();
 
 	GAController->InitGenerations(5000);
+	//GAController->InitGenerations(1);
 	
 	// Assert to ensure there's no leftover SmartEnemies that may disrupt initialization
 	check(AllSmartEnemiesDead());
@@ -47,10 +48,18 @@ void AGeneticLearningGameMode::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 }
 
+void AGeneticLearningGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GAController->EndPlay(EndPlayReason);
+}
+
 void AGeneticLearningGameMode::WaveCheck(ASmartEnemy* LastSmartEnemyKilled)
 {
 	GAController->InitGenerations(1000);
-
+	//GAController->InitGenerations(1);
+	
 	if(LastSmartEnemyKilled != nullptr)
 	{
 		const int32 EnemyIndex = SpawnedSmartEnemies.IndexOfByPredicate([&LastSmartEnemyKilled](const ASmartEnemy* InSmartEnemy)

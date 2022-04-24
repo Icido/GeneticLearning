@@ -16,9 +16,11 @@ class AGeneticLearningGameMode : public AGameModeBase
 public:
 	AGeneticLearningGameMode();
 
-	virtual void BeginPlay() override;
+	virtual void StartPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/**
 	 * @brief Checks if there are any SmartEnemies within the SpawnedSmartEnemies Array
